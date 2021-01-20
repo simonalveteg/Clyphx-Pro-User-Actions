@@ -10,6 +10,7 @@ class ExampleActions(UserActionsBase):
         self.add_track_action('rp', self.sa_rec)
         self.add_track_action('pp', self.sa_pause)
         self.add_global_action('drums', self.sa_drums)
+        self.add_global_action('tt', self.sa_test)
 
     def sa_drums(self, action_def, args):
         """ finds the right clip in 'drums' track and plays it"""
@@ -78,6 +79,26 @@ class ExampleActions(UserActionsBase):
             action = '%s/play %s' % (track_index, clipslot + 1)
 
         self.canonical_parent.clyphx_pro_component.trigger_action_list(action)
+
+        def sa_test(self, action_def, args):
+            """find playing clip on track y and select it. """
+            tracklist = list(self.song().tracks)
+            self.log('start')
+            y = args
+            # vars = args.split()
+            # y = args[0]
+            self.log(y)
+            for track in tracklist:
+                self.log('looping: %s' % track.name)
+                if track.name == y:
+                    self.log('track %s found' % track.name)
+                    t = track
+                    if t.playing_slot_index >= 0:
+                        self.log('has playing clip: %s' % t.playing_slot_index)
+                        selection = t.playing_slot_index + 1 # first clip has index 0
+                        self.canonical_parent.clyphx_pro_component.trigger_action_list('metro')
+                        self.canonical_parent.clyphx_pro_component.trigger_action_list('\"%s\"/sel %s' % (y, selection))
+                    break
 
     def toast(self, comments):
         self.canonical_parent.show_message(comments)

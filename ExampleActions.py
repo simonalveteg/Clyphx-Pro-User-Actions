@@ -11,6 +11,29 @@ class ExampleActions(UserActionsBase):
         self.add_track_action('pp', self.sa_pause)
         self.add_global_action('drums', self.sa_drums)
         self.add_global_action('tt', self.sa_test)
+        self.add_global_action('cum',self.sa_cum)
+        self.add_global_action('acne',self.apply_if_clip_name_contains)
+        # pussy
+    def apply_if_clip_name_contains(self, action_def, args):
+        """does an action on a track if the track has a clip where the name contains x"""
+        arg_split = args.split()
+        track_list = list(self.song().tracks)
+        for track in track_list:
+            clip_slots = track.clip_slots;
+            for slot in clip_slots:
+                if slot.has_clip:
+                    clip = slot.clip
+                    if arg_split[0] in clip.name:
+                        action = '%s/%s' % (track_list.index(track) + 1, ' '.join(arg_split[1:]))
+                        self.canonical_parent.clyphx_pro_component.trigger_action_list(action)
+
+    def sa_cum(self, action_def, args):
+        tracklist = self.song().tracks
+        self.log(tracklist)
+        for i in tracklist:
+            self.log(i)
+            self.log(i.clip_slots[1].has_clip)
+        self.log("cum: %s" % tracklist[2])
 
     def sa_drums(self, action_def, args):
         """ finds the right clip in 'drums' track and plays it"""
@@ -99,6 +122,7 @@ class ExampleActions(UserActionsBase):
                     self.canonical_parent.clyphx_pro_component.trigger_action_list('metro')
                     self.canonical_parent.clyphx_pro_component.trigger_action_list('\"%s\"/sel %s' % (y, selection))
                 break
+
 
     def toast(self, comments):
         self.canonical_parent.show_message(comments)

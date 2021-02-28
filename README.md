@@ -1,5 +1,5 @@
 # Clyphx-Pro-User-Actions
-Custom user actions for Ableton Live using Clyphx Pro
+Custom user actions for Ableton Live using Clyphx Pro 
 
 Current actions:
 

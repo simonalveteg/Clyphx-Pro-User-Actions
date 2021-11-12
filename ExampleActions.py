@@ -11,15 +11,15 @@ class ExampleActions(UserActionsBase):
         self.add_track_action('pp', self.sa_pause)
         self.add_global_action('drums', self.sa_drums)
         self.add_global_action('tt', self.sa_test)
-        self.add_global_action('cum',self.sa_cum)
-        self.add_global_action('acne',self.apply_if_clip_name_contains)
-        # pussy
+        self.add_global_action('cum', self.sa_cum)
+        self.add_global_action('acne', self.apply_if_clip_name_contains)
+
     def apply_if_clip_name_contains(self, action_def, args):
         """does an action on a track if the track has a clip where the name contains x"""
         arg_split = args.split()
         track_list = list(self.song().tracks)
         for track in track_list:
-            clip_slots = track.clip_slots;
+            clip_slots = track.clip_slots
             for slot in clip_slots:
                 if slot.has_clip:
                     clip = slot.clip
@@ -55,11 +55,11 @@ class ExampleActions(UserActionsBase):
                 self.log('clip exists')
             elif cliplist.index(clip) == 0:
                 self.log('index is 0')
-                clipslot = cliplist.index(clip) # no clips -> select first empty clipslot
+                clipslot = cliplist.index(clip)  # no clips -> select first empty clipslot
                 break
             else:
                 self.log('else')
-                clipslot = cliplist.index(clip) - 1 # clips exist -> select last clip
+                clipslot = cliplist.index(clip) - 1  # clips exist -> select last clip
                 break
         self.log('playing_status: %s' % track.clip_slots[clipslot].playing_status)
         self.log('is_recording: %s' % track.clip_slots[clipslot].is_recording)
@@ -89,7 +89,7 @@ class ExampleActions(UserActionsBase):
                 return
             else:
                 self.log('else')
-                clipslot = cliplist.index(clip) - 1 # clips exist -> select last clip
+                clipslot = cliplist.index(clip) - 1  # clips exist -> select last clip
                 break
         if track.clip_slots[clipslot].is_recording:
             self.log('is recording! stop playback')
@@ -118,13 +118,13 @@ class ExampleActions(UserActionsBase):
                 t = track
                 if t.playing_slot_index >= 0:
                     self.log('has playing clip: %s' % t.playing_slot_index)
-                    selection = t.playing_slot_index + 1 # first clip has index 0
+                    selection = t.playing_slot_index + 1  # first clip has index 0
                     self.canonical_parent.clyphx_pro_component.trigger_action_list('metro')
                     self.canonical_parent.clyphx_pro_component.trigger_action_list('\"%s\"/sel %s' % (y, selection))
                 break
 
-
     def toast(self, comments):
         self.canonical_parent.show_message(comments)
+
     def log(self, message):
         self.canonical_parent.log_message(message)

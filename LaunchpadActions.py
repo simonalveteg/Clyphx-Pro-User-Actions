@@ -3,7 +3,7 @@ from ClyphX_Pro.clyphx_pro.UserActionsBase import UserActionsBase
 
 
 # Your class must extend UserActionsBase.
-class SkarControls(UserActionsBase):
+class LaunchpadActions(UserActionsBase):
 
     # Your class must implement this method.
     def create_actions(self):

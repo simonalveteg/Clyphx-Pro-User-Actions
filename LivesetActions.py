@@ -9,6 +9,7 @@ class LivesetActions(UserActionsBase):
     def create_actions(self):
         self.add_track_action('rp', self.rec)
         self.add_track_action('pp', self.pause)
+        self.add_global_action('duplicate', self.duplicate)
     
     def rec(self, action_def, args):
         """check if track is already recording, play clip (to stop recording) if it is, otherwise start recording"""
@@ -72,8 +73,25 @@ class LivesetActions(UserActionsBase):
 
         self.canonical_parent.clyphx_pro_component.trigger_action_list(action)
 
+    def duplicate(self, action_def, args):
+        tracks = list(self.song().tracks)
+        selTrack = self.song().view.selected_track
+        selTrackIndex = tracks.index(selTrack)
+        trackArmed = selTrack.arm
+        self.song().duplicate_track(selTrackIndex)
+        newTrack = list(self.song().tracks)[selTrackIndex+1]
+        if trackArmed:
+            selTrack.arm = False
+            newTrack.arm = True
+        for clip in list(newTrack.clip_slots):
+            if clip.has_clip:
+                clip.delete_clip()
+
     def toast(self, comments):
         self.canonical_parent.show_message(comments)
 
     def log(self, message):
         self.canonical_parent.log_message(message)
+
+    def triggerActionList(self, list):
+        self.canonical_parent.clyphx_pro_component.trigger_action_list(list)

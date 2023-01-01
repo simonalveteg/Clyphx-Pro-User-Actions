@@ -22,6 +22,7 @@ class LivesetActions(UserActionsBase):
         self.add_global_action('duplicate', self.duplicate)
         self.add_track_action('col', self.colorTrack)
     
+    @print_except
     def rec(self, action_def, args):
         """check if track is already recording, play clip (to stop recording) if it is, otherwise start recording"""
         track = action_def['track']
@@ -53,6 +54,7 @@ class LivesetActions(UserActionsBase):
         action = '%s/play %s' % (track_index, clipslot + 1)
         self.triggerActionList(action)
 
+    @print_except
     def pause(self, action_def, args):
         """ play/stop the latest clip. If clip is recording it should stop the clip. if no clip exists do nothing """
         track = action_def['track']
@@ -84,6 +86,7 @@ class LivesetActions(UserActionsBase):
 
         self.triggerActionList(action)
 
+    @print_except
     def duplicate(self, action_def, args):
         tracks = list(self.song().tracks)
         selTrack = self.song().view.selected_track

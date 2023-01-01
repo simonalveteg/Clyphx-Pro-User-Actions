@@ -1,7 +1,17 @@
 # Import UserActionsBase to extend it.
 from ClyphX_Pro.clyphx_pro.UserActionsBase import UserActionsBase
 
-# Your class must extend UserActionsBase.
+import traceback
+
+def print_except(func):
+    def inner(*args, **kwargs):
+      try:
+        func(*args, **kwargs)
+      except:
+        args[0].canonical_parent.log_message(traceback.format_exc())
+    return inner
+
+
 class LivesetActions(UserActionsBase):
     """ ExampleActions provides some example actions for demonstration purposes. """
 
@@ -10,6 +20,7 @@ class LivesetActions(UserActionsBase):
         self.add_track_action('rp', self.rec)
         self.add_track_action('pp', self.pause)
         self.add_global_action('duplicate', self.duplicate)
+        self.add_track_action('col', self.colorTrack)
     
     def rec(self, action_def, args):
         """check if track is already recording, play clip (to stop recording) if it is, otherwise start recording"""
@@ -40,7 +51,7 @@ class LivesetActions(UserActionsBase):
             clipslot += 1
 
         action = '%s/play %s' % (track_index, clipslot + 1)
-        self.canonical_parent.clyphx_pro_component.trigger_action_list(action)
+        self.triggerActionList(action)
 
     def pause(self, action_def, args):
         """ play/stop the latest clip. If clip is recording it should stop the clip. if no clip exists do nothing """
@@ -71,7 +82,7 @@ class LivesetActions(UserActionsBase):
             self.log('not playing, start playback')
             action = '%s/play %s' % (track_index, clipslot + 1)
 
-        self.canonical_parent.clyphx_pro_component.trigger_action_list(action)
+        self.triggerActionList(action)
 
     def duplicate(self, action_def, args):
         tracks = list(self.song().tracks)
@@ -86,6 +97,25 @@ class LivesetActions(UserActionsBase):
         for clip in list(newTrack.clip_slots):
             if clip.has_clip:
                 clip.delete_clip()
+
+    @print_except
+    def colorTrack(self, action_def, args):
+        track = action_def['track']
+        currentColor = track.color_index
+        colors = [22, 17, 26, 47, 24, 20, 14, 69]
+        newColor = colors[0]
+        if currentColor in colors:
+            index = colors.index(currentColor)+1
+            if index >= len(colors):
+                index = 0
+            newColor = colors[index]
+
+        track.color_index = newColor
+        for clip in list(track.clip_slots):
+            if clip.has_clip:
+                clip.clip.color_index = newColor
+        for clip in list(track.arrangement_clips):
+                clip.color_index = newColor
 
     def toast(self, comments):
         self.canonical_parent.show_message(comments)

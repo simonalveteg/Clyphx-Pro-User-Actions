@@ -21,7 +21,18 @@ class LivesetActions(UserActionsBase):
         self.add_track_action('pp', self.pause)
         self.add_global_action('duplicate', self.duplicate)
         self.add_track_action('col', self.colorTrack)
-    
+        self.add_global_action('clr_session', self.clearSession)
+
+
+    @print_except
+    def clearSession(self, action_def, args):
+        tracks = list(self.song().tracks)
+        for track in tracks:
+            clips = list(track.clip_slots)
+            for clipslot in clips:
+                if clipslot.has_clip:
+                    clipslot.delete_clip()
+        
     @print_except
     def rec(self, action_def, args):
         """check if track is already recording, play clip (to stop recording) if it is, otherwise start recording"""
